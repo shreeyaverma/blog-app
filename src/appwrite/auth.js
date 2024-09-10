@@ -1,4 +1,3 @@
-import { current } from "@reduxjs/toolkit";
 import config from "../config/config";
 import { Client, Account, ID } from "appwrite";
 
@@ -10,7 +9,7 @@ export class AuthService {
     constructor() {
         this.client
             .setEndpoint(config.appwriteURL)
-            .setProject(conf.appwriteProjectId);
+            .setProject(config.appwriteProjectId);
         this.account = new Account(this.client)
     }
 
@@ -32,20 +31,35 @@ export class AuthService {
 
     async login({ email, password }) {
         try {
-            await this.account.createEmailPasswordSession(email, password)
+            return await this.account.createEmailPasswordSession(email, password)
         } catch (error) {
             throw error;
         }
     }
 
+    // async getCurrentUser() {
+    //     try {
+    //         return await this.account.get()
+    //     } catch (error) {
+    //         console.log("Appwrite service :: getCurrentUser() :: ", error);
+    //     }
+    //     return null
+    // }
+
     async getCurrentUser() {
         try {
-            return await this.account.get()
-        } catch (error) {
-            console.log("Appwrite service:: getCurrentUSer:: error", error)
+            const user = await this.account.get();
+            if (!user) {
+                const guest = await this.account.createAnonymousSession();
+                return guest
+            }
+            return user;
         }
-
-        return null
+        catch (error) {
+            // throw error;
+            console.log("Appwrite serive :: getCurrentUser:: error: ->>", error);
+        }
+        return null;
     }
 
     async logout() {

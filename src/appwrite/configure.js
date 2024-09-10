@@ -1,5 +1,5 @@
 import config from "../config/config";
-import { Client, Account, ID, Databases, Storage, Query } from "appwrite";
+import { Client, ID, Databases, Storage, Query } from "appwrite";
 
 export class Service {
     client = new Client()
@@ -9,7 +9,7 @@ export class Service {
     constructor() {
         this.client
             .setEndpoint(config.appwriteURL)
-            .setProject(conf.appwriteProjectId);
+            .setProject(config.appwriteProjectId);
         this.databases = new Databases(this.client)
         this.bucket = new Storage(this.client)
     }
@@ -30,6 +30,7 @@ export class Service {
             )
         } catch (error) {
             console.log("Appwrite service:: createPost:: error", error)
+            return false
         }
     }
 
@@ -48,6 +49,7 @@ export class Service {
             )
         } catch (error) {
             console.log("Appwrite service:: updatePost:: error", error)
+            return false
         }
     }
 
@@ -107,12 +109,13 @@ export class Service {
 
     async deleteFile(fileId) {
         try {
-            await this.bucket.deleteFile(
+            return await this.bucket.deleteFile(
                 config.appwriteBucketId,
                 fileId
             )
         } catch (error) {
             console.log("Appwrite service:: deleteFile:: error", error)
+            return false
         }
     }
 
