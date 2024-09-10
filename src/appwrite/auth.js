@@ -2,7 +2,7 @@ import { current } from "@reduxjs/toolkit";
 import config from "../config/config";
 import { Client, Account, ID } from "appwrite";
 
-
+//auth is for authenticating user
 export class AuthService {
     client = new Client();
     account;
